@@ -96,7 +96,7 @@
 	  	alpha    = event.alpha;
 	  	beta     = event.beta;
 	  	gamma    = event.gamma;
-	  	log("none,0,0");
+	  	log("none,0,0,0,0");
 	}
 
 	//2. initialize the debugger, it could be quite usefull to debug. in chrome go to view / developper / javascript console and when loading the page you will be able to see the messages wherever you write in your code: Debugger.log("my message");
@@ -236,8 +236,18 @@
 			mouseY = (evt.clientY - bRect.top)*(theCanvas.height/bRect.height);
 			//Debugger.log("mousedown x=" +mouseX+ "  height="+mouseY);
 			mouseWasDown = true;
+
+			var touchOffset = {x:0, y:0};
+			if(target1Selected == false){
+				touchOffset.x = Button1PositionsTable[currenttarget].x - mouseX;
+				touchOffset.y = Button1PositionsTable[currenttarget].y - mouseY;
+			}else if(target1Selected ==true && target2Selected ==false){
+				touchOffset.x = Button2PositionsTable[currenttarget].x - mouseX;
+				touchOffset.y = Button2PositionsTable[currenttarget].y - mouseY;
+			}
+
 			//ctx.drawImage(imGrip4,mouseX,mouseY);
-			log("mousedown,"+Math.floor(mouseX)+","+Math.floor(mouseY));
+			log("mousedown,"+Math.floor(mouseX)+","+Math.floor(mouseY)+","+Math.floor(touchOffset.x)+","+Math.floor(touchOffset.y));
 		}
 		function mouseUpListener(evt) {
 
@@ -355,7 +365,7 @@
   		usernumber = document.getElementById('usernumber').value;
 
   		// then writting information in the header of the csv file
-  		document.getElementById('hiddenDiv').innerHTML= "grasporder,support,posture,usernumber,currentgrasp,currenttarget, mouse event,mouseX,mouseY,time,error, absolute,alpha,beta,gamma,success,currenttime";
+  		document.getElementById('hiddenDiv').innerHTML= "grasporder,support,posture,usernumber,currentgrasp,currenttarget, mouse event,mouseX,mouseY,offsetX,offsetY,time,error, absolute,alpha,beta,gamma,success,currenttime";
 
   		//finally we start our automate
   		moveAutomate("",0,0);
