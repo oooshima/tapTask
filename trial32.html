@@ -458,8 +458,9 @@
 								success = 1;
 							document.getElementById('click_good').play();
 
-							touchOffset.x = Button2PositionsTable[currenttarget].x - mouseX;
-							touchOffset.y = Button2PositionsTable[currenttarget].y - mouseY;
+							var touchOffset = {x:0, y:0};
+							touchOffset.x = Button2PositionsTable[currenttarget].x - mx;
+							touchOffset.y = Button2PositionsTable[currenttarget].y - my;
 
 							log("mouseup,"+Math.floor(mx)+","+Math.floor(my)+","+Math.floor(touchOffset.x)+","+Math.floor(touchOffset.y));
 
