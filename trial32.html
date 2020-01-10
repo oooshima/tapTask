@@ -654,14 +654,6 @@ console.log(currentgrasp);
 
 //to sellect all text with one tap
 
-$('div.text-select-class').on('click', function (e) {
-            //e.preventDefault();
-            select_all(this);
-            var divJQ = $(this);
-            var text = divJQ.text();
-            alert(text);
-        });
-
 	function select_all(el) {
 	            if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
 	                var range = document.createRange();
@@ -755,7 +747,7 @@ $('div.text-select-class').on('click', function (e) {
  		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
  	</div>
 
-	<div hidden id="hiddenDiv" class="text-select-class">
+	<div hidden id="hiddenDiv" onfocus="this.select();">
 	</div>
 
 </body>
