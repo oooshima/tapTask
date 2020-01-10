@@ -239,11 +239,11 @@
 
 			var touchOffset = {x:0, y:0};
 			if(target1Selected == false){
-				touchOffset.x = Button1PositionsTable[currenttarget].x - mouseX;
-				touchOffset.y = Button1PositionsTable[currenttarget].y - mouseY;
+				touchOffset.x = Button1PositionsTable[currenttarget].x + (buttonwidth/2) - mouseX;
+				touchOffset.y = Button1PositionsTable[currenttarget].y + (buttonheight/2) - mouseY;
 			}else if(target1Selected ==true && target2Selected ==false){
-				touchOffset.x = Button2PositionsTable[currenttarget].x - mouseX;
-				touchOffset.y = Button2PositionsTable[currenttarget].y - mouseY;
+				touchOffset.x = Button2PositionsTable[currenttarget].x + (buttonwidth/2) - mouseX;
+				touchOffset.y = Button2PositionsTable[currenttarget].y + (buttonheight/2) - mouseY;
 			}
 
 			//ctx.drawImage(imGrip4,mouseX,mouseY);
@@ -440,8 +440,8 @@
 						}
 
 						var touchOffset = {x:0, y:0};
-						touchOffset.x = Button1PositionsTable[currenttarget].x - mx;
-						touchOffset.y = Button1PositionsTable[currenttarget].y - my;
+						touchOffset.x = Button1PositionsTable[currenttarget].x + (buttonwidth/2) - mx;
+						touchOffset.y = Button1PositionsTable[currenttarget].y + (buttonheight/2) - my;
 
 						log("mouseup,"+Math.floor(mx)+","+Math.floor(my)+","+Math.floor(touchOffset.x)+","+Math.floor(touchOffset.y));
 					}
@@ -458,9 +458,8 @@
 								success = 1;
 							document.getElementById('click_good').play();
 
-							var touchOffset = {x:0, y:0};
-							touchOffset.x = Button2PositionsTable[currenttarget].x - mx;
-							touchOffset.y = Button2PositionsTable[currenttarget].y - my;
+							touchOffset.x = Button2PositionsTable[currenttarget].x + (buttonwidth/2) - mx;
+							touchOffset.y = Button2PositionsTable[currenttarget].y + (buttonheight/2) - my;
 
 							log("mouseup,"+Math.floor(mx)+","+Math.floor(my)+","+Math.floor(touchOffset.x)+","+Math.floor(touchOffset.y));
 
