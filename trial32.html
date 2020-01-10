@@ -90,6 +90,24 @@
         console.error(error);
 	}
 
+
+	function request_permission(){
+	  if (
+	    DeviceMotionEvent &&
+	    DeviceMotionEvent.requestPermission &&
+	    typeof DeviceMotionEvent.requestPermission === 'function'
+	  ) {
+	    DeviceMotionEvent.requestPermission();
+	  }
+	  if (
+	    DeviceOrientationEvent &&
+	    DeviceOrientationEvent.requestPermission &&
+	    typeof DeviceOrientationEvent.requestPermission === 'function'
+	  ) {
+	    DeviceOrientationEvent.requestPermission();
+	  }
+	}
+
 	window.addEventListener("deviceorientation", handleOrientation, true);
 	function handleOrientation(event) {
 	  	absolute = event.absolute;
@@ -761,6 +779,7 @@ console.log(currentgrasp);
 			</fieldset>
 
   			<button type = "button" onclick = "startXP()">Start experiment</button>
+				<button type = "button" onclick = "request_permission()">request_permission</button>
 
  			</form>
  	</div>
