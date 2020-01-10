@@ -438,7 +438,12 @@
 							error ++;
 							document.getElementById('click_bad').play();
 						}
-						log("mouseup,"+Math.floor(mx)+","+Math.floor(my));
+
+						var touchOffset = {x:0, y:0};
+						touchOffset.x = Button1PositionsTable[currenttarget].x - mx;
+						touchOffset.y = Button1PositionsTable[currenttarget].y - my;
+
+						log("mouseup,"+Math.floor(mx)+","+Math.floor(my)+","+Math.floor(touchOffset.x)+","+Math.floor(touchOffset.y));
 					}
 					// if the first target has been selected
 					else if(target1Selected ==true && target2Selected ==false)
@@ -452,7 +457,11 @@
 							if (error==0)
 								success = 1;
 							document.getElementById('click_good').play();
-							log("mouseup,"+Math.floor(mx)+","+Math.floor(my));
+
+							touchOffset.x = Button2PositionsTable[currenttarget].x - mouseX;
+							touchOffset.y = Button2PositionsTable[currenttarget].y - mouseY;
+
+							log("mouseup,"+Math.floor(mx)+","+Math.floor(my)+","+Math.floor(touchOffset.x)+","+Math.floor(touchOffset.y));
 
 							//first case, we go to the next logical target
 							if (currenttarget<numberoftarget-1)
