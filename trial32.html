@@ -532,7 +532,19 @@
 					textRange.moveToElementText(el);
 					textRange.select();
 			}
+			document.execCommand("copy");
 	}
+
+	function copyToClipboard() {
+            // コピー対象をJavaScript上で変数として定義する
+            var copyTarget = document.getElementById("copyTarget");
+            // コピー対象のテキストを選択する
+            copyTarget.select();
+            // 選択しているテキストをクリップボードにコピーする
+            document.execCommand("Copy");
+            // コピーをお知らせする
+            alert("コピーできました！ : " + copyTarget.value);
+        }
 
 
 	//function that display the graphics
@@ -671,24 +683,6 @@ console.log(currentgrasp);
 	}
 
 
-//to sellect all text with one tap
-
-	function select_all(el) {
-	            if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-	                var range = document.createRange();
-	                range.selectNodeContents(el);
-	                var sel = window.getSelection();
-	                sel.removeAllRanges();
-	                sel.addRange(range);
-	            } else if (typeof document.selection != "undefined" && typeof document.body.createTextRange != "undefined") {
-	                var textRange = document.body.createTextRange();
-	                textRange.moveToElementText(el);
-	                textRange.select();
-	            }
-	        }
-
-
-
 	</script>
 
 </head>
@@ -780,7 +774,7 @@ console.log(currentgrasp);
  		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
  	</div>
 
-	<div hidden id="hiddenDiv">
+	<div hidden id="hiddenDiv" type="text">
 	</div>
 
 </body>
