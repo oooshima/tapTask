@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="robots" content="noindex,nofollow" />
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+	<style type="text/css">
+		h4 {font-family: sans-serif;}
+		p {font-family: sans-serif;}
+		a {font-family: sans-serif; color:#d15423; text-decoration:none;}
+	body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+    </style>
+
+
+	<title>Study 1</title>
+
+	<script type="text/javascript">
+
+	//here our public variable (btw this is really ugly coding lol)
+	var foldername = "/images";
+	//var foldername = "http://www.anneroudaut.fr/Rachel/images/";
+	var foldername = "http://www.racheleardley.net/iPhone6/images/";
+	var grasporder = 0;
+	var phonesize = 0;
+	var usernumber = 0;
+	var currentgrasp = 0;
+	var currentgraspcount = 0;
+	var currenttarget = 0;
+	var numberoftarget = 1;
+	var currentstate = "";
+	var target1Selected = false;
+	var target2Selected = false;
+	var imGrip1,imGrip2,imGrip3,imGrip4,imButtonNext,imButton1,imButton2,imButton3,imButtonGrey;
+	var starttime = 0;
+	var currenttime = "";
+	var error = 0;
+	var success = 0;
+	var Button1PositionsTable,Button2PositionsTable,ButtonPositionsNameTable;
+	var currenttask = 1;
+
+	var buttonwidth = 88;
+	var buttonheight = 88;
+
+	var buttonNextwidth = 88;
+	var buttonNextheight = 88;
+
+	var buttonGripwidth = 88;
+	var buttonGripheight = 88;
+	var permissionOrientation= "unknown"
+
+	var absolute = false;
+
+	var alpha = null,beta = null,gamma = null;
+
+	//0. make the window loads the function "windowLoadHandler" when first launched
+	window.addEventListener("load", windowLoadHandler, false);
+	//if ( location.protocol != "https:" ) {
+    //        location.href = "https:" + window.location.href.substring( window.location.protocol.length );
+    //}
+	//1.make the window listen to accelerometer
+	try{
+    	if (typeof DeviceMotionEvent.requestPermission === 'function')
+    	{
+    	    DeviceMotionEvent.requestPermission()
+                .then(permissionState => {
+                  if (permissionState === 'granted') {
+                      permissionOrientation="granted"
+                    window.addEventListener("deviceorientation", handleOrientation, true);
+                  }else{
+                     permissionOrientation="notgranted"
+                  }
+                })
+                .catch(console.error);
+    	}else{
+    	    permissionOrientation=typeof DeviceMotionEvent.requestPermission
+    	}
+	}
+	catch(error) {
+	    permissionOrientation="error"
+        console.error(error);
+	}
+
+	window.addEventListener("deviceorientation", handleOrientation, true);
+	function handleOrientation(event) {
+	  	absolute = event.absolute;
+	  	alpha    = event.alpha;
+	  	beta     = event.beta;
+	  	gamma    = event.gamma;
+	  	log("none,0,0");
+	}
+
+	//2. initialize the debugger, it could be quite usefull to debug. in chrome go to view / developper / javascript console and when loading the page you will be able to see the messages wherever you write in your code: Debugger.log("my message");
+	var Debugger = function() { };
+	Debugger.log = function(message) {
+		try {
+			console.log(message);
+		}
+		catch (exception) {
+			return;
+		}
+	}
+
+	//3. ok this is the function that will be loaded first, it launches the function canvasApp
+	function windowLoadHandler() {
+		canvasApp();
+	}
+
+	function randomIntFromInterval(min,max)
+	{
+    	return Math.floor(Math.random()*(max-min+1)+min);
+	}
+
+	function canvasApp() {
+
+		//4. first we get the canvas declared in the <body>
+		var theCanvas = document.getElementById("canvasOne");
+
+		//5. then get the ctx ready, this is what we will use to draw things
+		var ctx = theCanvas.getContext("2d");
+
+		//6. lunch the function that resize the canvas to fit the screen size
+		resize_canvas();
+
+  		function resize_canvas(){
+            if (theCanvas.width  < window.innerWidth)
+           {
+               theCanvas.width  = window.innerWidth;
+           }
+           if (theCanvas.height < window.innerHeight)
+            {
+                theCanvas.height = window.innerHeight;
+            }
+            Debugger.log("size of the window width=" +theCanvas.width+ "  height="+theCanvas.height);
+       }
+
+		//7. then we prepare the images and the position of things
+
+		//prepare the grip images and positions (will be the same for all I assumed)
+		imGrip1 = new Image();
+		imGrip1.src = foldername+"/grip1a.png";
+		imGrip2 = new Image();
+		imGrip2.src = foldername+"/grip2a.png";
+		imGrip3 = new Image()
+		imGrip3.src = foldername+"/grip3a.png";
+		imGrip4 = new Image();
+		imGrip4.src = foldername+"/grip4a.png";
+		//imGripPosition = {x:theCanvas.width/2-buttonGripwidth/2, y:theCanvas.height/2-buttonGripheight/2}
+
+		//prepare the button image for the "next" trial  and position (I put it in the center)
+		imButtonNext = new Image();
+		imButtonNext.src = foldername+"/buttonNext.png";
+		imNextPosition = {x:theCanvas.width/2-buttonNextwidth/2, y:theCanvas.height/2-buttonNextheight/2}
+
+
+		//prepare the buttons images
+		imButton1 = new Image();
+		imButton1.src = foldername+"/button1.png";
+		imButton2 = new Image();
+		imButton2.src = foldername+"/button2.png";
+		imButton3 = new Image();
+		imButton3.src = foldername+"/grey1.png";
+
+
+		//for the positions of the button it will change so we need a table, i put only 2 for now but the values need to be changed accordingly to what you designed
+		//<to change with corect values>
+
+		//RACHEL:  Adding the midpoints in ** Original ones work but new midpoints dont :( - They only show one and not both**
+		// var topleft = {x:0, y:0};
+		// var topright = {x:287, y:0};
+		// var bottomleft = {x:0, y:559};
+		// var bottomright = {x:287, y:559};
+		// var topleftmid = {x:0, y:140};
+		// var toprightmid = {x:287, y:140};
+		// var bottomleftmid = {x:0, y:419};
+		// var bottomrightmid = {x:287, y:419};
+
+
+		var temp1 = theCanvas.width-buttonwidth;
+		var temp2 = theCanvas.height-buttonheight;
+
+		var topleft = {x:0, y:0};
+		var topright = {x:temp1, y:0};
+		var bottomleft = {x:0, y:temp2};
+		var bottomright = {x:temp1, y:temp2};
+
+		//var temp3 = (theCanvas.height-2*buttonheight)/3;
+		var temp3 = theCanvas.height/3;
+		//var temp4 = buttonheight + temp3 - buttonheight/2;
+		var temp4 = temp3 - buttonheight/3;
+		//var temp5 = buttonheight + 2*temp3 - buttonheight/2;
+		var temp5 = (2*temp3) - (2*buttonheight/3);
+
+		var topleftmid = {x:0, y:temp4};
+		var toprightmid = {x:temp1, y:temp4};
+		var bottomleftmid = {x:0, y:temp5};
+		var bottomrightmid = {x:temp1, y:temp5};
+
+		Button1PositionsTable = [topright,topleft,bottomright,bottomleft,topleftmid,toprightmid,bottomrightmid,bottomleftmid];
+		Button2PositionsTable = [bottomleft,bottomright,topleft,topright,bottomrightmid,bottomleftmid,topleftmid,toprightmid];
+		ButtonPositionsNameTable = [1,2,3,4,5,6,7,8]; // just to make it easier to read csv files
+
+		randomiseposition();//this function randomize the position of the targets
+
+
+		//now we just want to print the results in the debugger to check if ok
+		var length =  Button1PositionsTable.length;
+		for (i = 0; i<length;i++)
+		{
+			Debugger.log("button1 position "+i+" x=" +Button1PositionsTable[i].x+"  y="+Button1PositionsTable[i].y);
+			Debugger.log("button2 position "+i+" x=" +Button2PositionsTable[i].x+"  y="+Button2PositionsTable[i].y);
+		}
+
+		//9. make the canvas listen to mousedown event, when a mouse down it will go to the function "mouseDownListener" that is described below  ... do the same with mouse up and drag
+		theCanvas.addEventListener("mousedown", mouseDownListener, false);
+		theCanvas.addEventListener("mouseup", mouseUpListener, false);
+		theCanvas.addEventListener("mousemove", mouseMoveListener, false);
+
+		//we also need to have a variable to make the difference between hover and slide
+		var mouseWasDown = false;
+
+		function mouseDownListener(evt) {
+
+			//a getting mouse position correctly, being mindful of resizing that may have occured in the browser:
+			var bRect = theCanvas.getBoundingClientRect();
+			mouseX = (evt.clientX - bRect.left)*(theCanvas.width/bRect.width);
+			mouseY = (evt.clientY - bRect.top)*(theCanvas.height/bRect.height);
+			//Debugger.log("mousedown x=" +mouseX+ "  height="+mouseY);
+			mouseWasDown = true;
+			//ctx.drawImage(imGrip4,mouseX,mouseY);
+			log("mousedown,"+Math.floor(mouseX)+","+Math.floor(mouseY));
+		}
+		function mouseUpListener(evt) {
+
+			//a. getting mouse position correctly, being mindful of resizing that may have occured in the browser:
+			var bRect = theCanvas.getBoundingClientRect();
+			mouseX = (evt.clientX - bRect.left)*(theCanvas.width/bRect.width);
+			mouseY = (evt.clientY - bRect.top)*(theCanvas.height/bRect.height);
+			//Debugger.log("mouseup x=" +mouseX+ "  height="+mouseY);
+			mouseWasDown = false;
+			moveAutomate("click",mouseX,mouseY);
+		}
+		function mouseMoveListener(evt) {
+
+			//a. getting mouse position correctly, being mindful of resizing that may have occured in the browser:
+			// here we only do something is mouseWasDown was true ... otherwise it is a hover
+			if (mouseWasDown == true)
+			{
+				var bRect = theCanvas.getBoundingClientRect();
+				mouseX = (evt.clientX - bRect.left)*(theCanvas.width/bRect.width);
+				mouseY = (evt.clientY - bRect.top)*(theCanvas.height/bRect.height);
+				//Debugger.log("mousedrag x=" +mouseX+ "  height="+mouseY);
+				log("mousedrag,"+Math.floor(mouseX)+","+Math.floor(mouseY));
+			}
+		}
+	}
+	var xpAsStarted = false;
+
+	function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+	}
+
+	function log (text)
+	{
+		if(currentstate == "showTarget"){
+			var d = new Date();
+			timeelapsed = d.getTime()-starttime;
+			currenttime = d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()+"/"+addZero(d.getHours())+"/"+addZero(d.getMinutes())+"/"+addZero(d.getSeconds());
+			//commenting the next line will stop the data logging
+			document.getElementById('hiddenDiv').innerHTML= document.getElementById('hiddenDiv').innerHTML+"<br>"+grasporder+","+phonesize+","+usernumber+","+currentgrasp+","+ButtonPositionsNameTable[currenttarget]+","+text+","+timeelapsed+","+error+","+Math.floor(absolute)+","+Math.floor(alpha)+","+Math.floor(beta)+","+Math.floor(gamma)+","+success+","+currenttime;
+		}
+	}
+
+	function randomiseposition() {
+			// a. what we will do is a loop of 20 iterations
+			loopcounter = 0;
+			while(loopcounter<20)
+			{
+				loopcounter = loopcounter+1;
+				//b. ok we will do in there 20 times
+				// each time we want to randomly take two position in the tables and exchange them
+				var positionToexchange1 = randomIntFromInterval(0,Button1PositionsTable.length-1);
+				var positionToexchange2 = randomIntFromInterval(0,Button1PositionsTable.length-1);
+				//c. ok now we need to exchange the tables
+				var temp = Button1PositionsTable[positionToexchange1];
+				Button1PositionsTable[positionToexchange1] = Button1PositionsTable[positionToexchange2];
+				Button1PositionsTable[positionToexchange2] = temp;
+				//d. we do the same with the 2nd button table
+				temp = Button2PositionsTable[positionToexchange1];
+				Button2PositionsTable[positionToexchange1] = Button2PositionsTable[positionToexchange2];
+				Button2PositionsTable[positionToexchange2] = temp;
+				//e. we do that for the target conditions names
+				temp = ButtonPositionsNameTable[positionToexchange1];
+				ButtonPositionsNameTable[positionToexchange1] = ButtonPositionsNameTable[positionToexchange2];
+				ButtonPositionsNameTable[positionToexchange2] = temp;
+				//e. done! hopefully by the hand of this we have a randomised table
+				// you can always increase the value in "while(loopcounter<20)" to randomize more
+		}
+	}
+	//this function is called when you click on the start experiment on the UI
+	function startXP()
+	{
+		xpAsStarted = true;
+
+		//we are get the value of the form
+		if (document.getElementById('ckgrasporder1').checked){
+  			grasporder = document.getElementById('ckgrasporder1').value;
+  			currentgrasp = 1;
+			currentgraspcount = 1;
+  		}
+		if (document.getElementById('ckgrasporder2').checked) {
+  			grasporder = document.getElementById('ckgrasporder2').value;
+  			currentgrasp = 2;
+			currentgraspcount = 1;
+  		}
+  		if (document.getElementById('ckgrasporder3').checked) {
+  			grasporder = document.getElementById('ckgrasporder3').value;
+  			currentgrasp = 3;
+			currentgraspcount = 1;
+  		}
+  		if (document.getElementById('ckgrasporder4').checked) {
+  			grasporder = document.getElementById('ckgrasporder4').value;
+  			currentgrasp = 4;
+			currentgraspcount = 1;
+  		}
+
+
+		if (document.getElementById('ckphone1').checked)
+  			phonesize = document.getElementById('ckphone1').value;
+		if (document.getElementById('ckphone2').checked)
+  			phonesize = document.getElementById('ckphone2').value;
+  		if (document.getElementById('ckphone3').checked)
+  			phonesize = document.getElementById('ckphone3').value;
+
+  		usernumber = document.getElementById('usernumber').value;
+
+  		// then writting information in the header of the csv file
+  		document.getElementById('hiddenDiv').innerHTML= "grasporder,posture,usernumber,currentgrasp,currenttarget, mouse event,mouseX,mouseY,time,error, absolute,alpha,beta,gamma,success,currenttime";
+
+  		//finally we start our automate
+  		moveAutomate("",0,0);
+	}
+
+	//this function is the heart of the interaction sequence
+	//it basically control the "dance" between the different UI and so on
+	//this function is called first just above ... and then on each mouseup event as a moveAutomate("click",x,y)
+	//x and y are the mouse position
+	function moveAutomate(text,mx,my)
+	{
+
+		//we just start the xp
+		if (text == ""){
+			currentstate = "showGrasp";
+			document.getElementById("startdiv").style.visibility = "hidden";
+			//window.scrollTo(0,0);
+			setTimeout(function() { window.scrollTo(0, 1) }, 100);
+			disableScroll();
+			document.body.style.overflow = 'hidden';
+		}
+		//we are in the middle of the xp
+		else
+		{
+			if (text == "click")
+			{
+				if (currentstate == "showGrasp")
+				{
+					currentstate = "showNext";
+					document.getElementById('click_good').play();
+					success = 0;
+				}
+				else if (currentstate == "showNext")
+				{
+					success = 0;
+					var posx = imNextPosition.x;
+					var posy = imNextPosition.y;
+					if(mx>posx && mx <posx+buttonNextwidth && my>posy && my <posy+buttonNextwidth)
+					{
+						//if the click happened in the next button
+						currentstate = "showTarget";
+
+						target1Selected = false;
+						target2Selected = false;
+						error = 0;
+						var d = new Date();
+						starttime = d.getTime();
+						document.getElementById('click_good').play();
+					}
+					else
+					{
+						document.getElementById('click_bad').play();
+					}
+				}
+				else if (currentstate == "showTarget")
+				{
+					// if no target has been selected yet
+					if(target1Selected ==false)
+					{
+						var posx = Button1PositionsTable[currenttarget].x;
+						var posy = Button1PositionsTable[currenttarget].y;
+						if(mx>posx && mx <posx+buttonwidth && my>posy && my <posy+buttonheight)
+						{
+							//if a click happened in the target 1
+							target1Selected = true;
+							document.getElementById('click_good').play();
+						}
+						else
+						{
+							error ++;
+							document.getElementById('click_bad').play();
+						}
+						log("mouseup,"+Math.floor(mx)+","+Math.floor(my));
+					}
+					// if the first target has been selected
+					else if(target1Selected ==true && target2Selected ==false)
+					{
+						var posx = Button2PositionsTable[currenttarget].x;
+						var posy = Button2PositionsTable[currenttarget].y;
+						if(mx>posx && mx <posx+buttonwidth && my>posy && my <posy+buttonheight)
+						{
+							//if the click happened in the target 2
+							target2Selected = true;
+							if (error==0)
+								success = 1;
+							document.getElementById('click_good').play();
+							log("mouseup,"+Math.floor(mx)+","+Math.floor(my));
+
+							//first case, we go to the next logical target
+							if (currenttarget<numberoftarget-1)
+							{
+								currentstate = "showNext";
+								currenttarget = currenttarget +1;
+							}
+							//second case, we have done all the targest, so we  go to the next grasp
+							else
+							{
+								currentgrasp = currentgrasp +1;
+								currentgraspcount = currentgraspcount +1;
+								if (currentgrasp ==5)
+									currentgrasp = 1;
+								currentstate = "showGrasp";
+								currenttask = currenttask+1;
+								randomiseposition();
+								currenttarget = 0;
+
+								//we have done all the possible grasp so we are done!
+								if(currentgrasp == grasporder)
+								{
+									//so let's stop the automate
+									currentstate = "";
+									//we minimize the canvas size and leave more space on the screen for the hidden div
+									document.getElementById("canvasOne").height=document.getElementById("canvasOne").height/10;
+									document.getElementById('hiddenDiv').style.display = "block";
+									//document.getElementById('savefileform').style.display = "block";
+									//we put back the scroll and scrollbar
+
+									document.body.style.overflow = 'scroll';
+									enableScroll();
+								}
+							}
+						}
+						else
+						{
+							error ++;
+							document.getElementById('click_bad').play();
+						}
+					}
+				}
+			}
+
+		//debugger.log("current state"+currentstate);
+		}
+		//Debugger.log("finish automate with "+currentstate);
+
+		//once the automate is done we update the graphics
+		updateCanvasGraphic();
+	}
+
+	//function that display the graphics
+	function updateCanvasGraphic()
+	{
+
+		var theCanvas = document.getElementById("canvasOne");
+		var ctx = theCanvas.getContext("2d");
+
+		//we draw everything white
+		ctx.fillStyle="#FFFFFF";
+		ctx.fillRect(0,0,theCanvas.width,theCanvas.height);
+
+//Rachel: Trying to add the 1 of 4 progression information and images--- ONLY WORKS ON THR FIRST ONE???
+
+
+		if(currentstate == "showGrasp")
+		{
+			ctx.font = "16px Arial";
+			ctx.fillStyle = "black";
+			ctx.textAlign = "center";
+		//	ctx.fillText("Grip",theCanvas.width/2,150);
+		//	ctx.fillText((currentgrasp) + " of 4",theCanvas.width/2,165);
+			texttemp = "Grip "+currentgraspcount+" of 4"+ permissionOrientation;
+            ctx.fillText(texttemp,theCanvas.width/2,theCanvas.height/3-100);
+
+console.log(currentgrasp);
+
+			if (currentgrasp ==1)
+				ctx.drawImage(imGrip1,theCanvas.width/2-114.5,theCanvas.height/3);
+			if (currentgrasp ==2)
+				ctx.drawImage(imGrip2,theCanvas.width/2-114.5,theCanvas.height/3);
+			if (currentgrasp ==3)
+				ctx.drawImage(imGrip3,theCanvas.width/2-114.5,theCanvas.height/3);
+			if (currentgrasp ==4)
+				ctx.drawImage(imGrip4,theCanvas.width/2-114.5,theCanvas.height/3);
+		}
+
+		if(currentstate == "showTarget")
+		{
+			ctx.drawImage(imButton1,Button1PositionsTable[currenttarget].x,Button1PositionsTable[currenttarget].y);
+			ctx.drawImage(imButton2,Button2PositionsTable[currenttarget].x,Button2PositionsTable[currenttarget].y);
+			Debugger.log("currnet target "+ButtonPositionsNameTable[currenttarget]);
+			if(target1Selected ==true)
+			{
+				var posx = Button1PositionsTable[currenttarget].x;
+				var posy = Button1PositionsTable[currenttarget].y;
+
+				//color the target in green I remove that
+				  //ctx.beginPath();
+			      //ctx.arc(posx+buttonwidth/2, posy+buttonwidth/2, buttonwidth/2, 0, 2 * Math.PI, false);
+			      //ctx.fillStyle = 'grey';
+			      //ctx.fill();
+			    //instead I draw an image 3
+			    ctx.drawImage(imButton3,Button1PositionsTable[currenttarget].x,Button1PositionsTable[currenttarget].y);
+
+
+			    //  ctx.lineWidth = 5;
+			    //  ctx.strokeStyle = '#003300';
+			    //  ctx.stroke();
+			}
+		}
+//Rachel: Trying to add the 1 of 4 progression information
+		if(currentstate == "showNext")
+		{
+			ctx.drawImage(imButtonNext,imNextPosition.x,imNextPosition.y);
+			ctx.font = "16px Arial";
+			ctx.fillStyle = "black";
+			ctx.textAlign = "center";
+			texttemp = "Grip "+currentgraspcount+" of 4";
+            ctx.fillText(texttemp,theCanvas.width/2,theCanvas.height/3-100);
+			ctx.fillText("Ready for task",theCanvas.width/2,theCanvas.height/3-30);
+			ctx.fillText((currenttarget+1) + " of "+numberoftarget,theCanvas.width/2,theCanvas.height/3-5);
+		}
+	}
+
+	//function to prevent scrolling
+	function preventDefault(e) {
+	  e = e || window.event;
+	  if (e.preventDefault)
+	      e.preventDefault();
+	  e.returnValue = false;
+	}
+
+	//function to prevent scrolling
+	function disableScroll() {
+	  if (window.addEventListener) // older FF
+	      window.addEventListener('DOMMouseScroll', preventDefault, false);
+	  window.onwheel = preventDefault; // modern standard
+	  window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
+	  window.ontouchmove  = preventDefault; // mobile
+	}
+
+	//function to prevent scrolling
+	function enableScroll() {
+	    if (window.removeEventListener)
+	        window.removeEventListener('DOMMouseScroll', preventDefault, false);
+	    window.onmousewheel = document.onmousewheel = null;
+	    window.onwheel = null;
+	    window.ontouchmove = null;
+	}
+
+	//file saving
+	function saveTextAsFile()
+	{
+		var textToWrite = document.getElementById("hiddenDiv").innerHTML;
+		Debugger.log(textToWrite);
+		var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+		var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+
+		var downloadLink = document.createElement("a");
+		downloadLink.download = fileNameToSaveAs;
+		downloadLink.innerHTML = "Download File";
+		if (window.URL != null)
+		{
+			// Chrome allows the link to be clicked
+			// without actually adding it to the DOM.
+			downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+		}
+		else
+		{
+			// Firefox requires the link to be added to the DOM
+			// before it can be clicked.
+			downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+			downloadLink.onclick = destroyClickedElement;
+			downloadLink.style.display = "none";
+			document.body.appendChild(downloadLink);
+		}
+
+		downloadLink.click();
+	}
+
+	function destroyClickedElement(event)
+	{
+		document.body.removeChild(event.target);
+	}
+
+	</script>
+
+</head>
+<body>
+
+	<canvas id="canvasOne" width="" height="">
+	Your browser does not support HTML5 canvas.
+	</canvas>
+
+	<div id="startdiv">
+ 			<form action = "">
+ 			<fieldset>
+  			<input type = "radio" name="grasporder" id = "ckgrasporder1" value = "1" checked/>
+  			<label for = "ckgrasporder1">Single-Biman-AsymThumb-AsymFinger</label>
+  			<input type = "radio" name="grasporder" id = "ckgrasporder2" value = "2" />
+  			<label for = "ckgrasporder2">Biman-AsymThumb-AsymFinger-Single</label>
+  			<input type = "radio" name="grasporder" id = "ckgrasporder3" value = "3" />
+  			<label for = "ckgrasporder3">AsymThumb-AsymFinger-Single-Biman</label>
+  			<input type = "radio" name="grasporder" id = "ckgrasporder4" value = "4" />
+  			<label for = "ckgrasporder4">AsymFinger-Single-Biman-AsymThumb</label>
+  			</fieldset>
+
+  			<fieldset>
+  			<input type = "radio" name="phonecondition" id = "ckphone1" value = "1" checked/>
+  			<label for = "ckphone1">Support-Support</label>
+  			<input type = "radio" name="phonecondition" id = "ckphone2" value = "2" />
+  			<label for = "ckphone2">Support-NoSupport</label>
+  			<input type = "radio" name="phonecondition" id = "ckphone3" value = "3" />
+  			<label for = "ckphone3">NoSupport-NoSupport</label>
+  			</fieldset>
+
+  			<fieldset>
+  			<select id = "usernumber" name="usernumb">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+			<option value="13">13</option>
+			<option value="14">14</option>
+			<option value="15">15</option>
+			<option value="16">16</option>
+			<option value="17">17</option>
+			<option value="18">18</option>
+			</select>
+			</fieldset>
+
+  			<button type = "button" onclick = "startXP()">Start experiment</button>
+
+ 			</form>
+ 	</div>
+ 	<div hidden id="savefileform">
+ 		<td>Filename name:</td>
+		<td><input id="inputFileNameToSaveAs"></input></td>
+		<td><button onclick="saveTextAsFile()">Save</button></td>
+ 	</div>
+ 	<div hidden id="audiodiv">
+ 		<audio id="click_good" src="http://www.racheleardley.net/iPhone6/images/click_good.wav" preload="auto"></audio>
+ 		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
+ 	</div>
+
+	<div hidden id="hiddenDiv">
+	</div>
+
+</body>
+</html>
