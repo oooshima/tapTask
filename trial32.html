@@ -37,7 +37,7 @@
 	var currentgrasp = 0;
 	var currentgraspcount = 0;
 	var currenttarget = 0;
-	var numberoftarget = 8;
+	var numberoftarget = 1;
 	var currentstate = "";
 	var target1Selected = false;
 	var target2Selected = false;
@@ -323,6 +323,7 @@
 	function startXP()
 	{
 		xpAsStarted = true;
+		numberoftarget = document.getElementById('tasknum').value;
 
 		//we are get the value of the form
 		if (document.getElementById('ckgrasporder1').checked){
@@ -489,8 +490,10 @@
 									currentstate = "";
 									//we minimize the canvas size and leave more space on the screen for the hidden div
 									document.getElementById("canvasOne").height=document.getElementById("canvasOne").height/10;
-									document.getElementById('hiddenText').style.display = "block";
-
+									document.getElementById('hiddenDiv').style.display = "block";
+									document.getElementById('hiddenDiv').onclick = function() {
+										select_all(this);
+									};
 									//document.getElementById('savefileform').style.display = "block";
 									//we put back the scroll and scrollbar
 
@@ -515,6 +518,22 @@
 		//once the automate is done we update the graphics
 		updateCanvasGraphic();
 	}
+
+
+	function select_all(el) {
+			if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+					var range = document.createRange();
+					range.selectNodeContents(el);
+					var sel = window.getSelection();
+					sel.removeAllRanges();
+					sel.addRange(range);
+			} else if (typeof document.selection != "undefined" && typeof document.body.createTextRange != "undefined") {
+					var textRange = document.body.createTextRange();
+					textRange.moveToElementText(el);
+					textRange.select();
+			}
+	}
+
 
 	//function that display the graphics
 	function updateCanvasGraphic()
@@ -681,6 +700,20 @@ console.log(currentgrasp);
 
 	<div id="startdiv">
  			<form action = "">
+
+				<fieldset>
+				<select id = "tasknum" name="tasknum">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				</select>
+				</fieldset>
+
  			<fieldset>
   			<input type = "radio" name="grasporder" id = "ckgrasporder1" value = "1" checked/>
   			<label for = "ckgrasporder1">Single-Biman-AsymThumb-AsymFinger</label>
@@ -747,8 +780,7 @@ console.log(currentgrasp);
  		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
  	</div>
 
-	<div hidden id="hiddenText">
-		<input type="text" id="hiddenDiv" onfocus="this.select();"></input>
+	<div hidden id="hiddenDiv">
 	</div>
 
 </body>
