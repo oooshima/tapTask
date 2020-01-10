@@ -32,6 +32,7 @@
 	var foldername = "http://www.racheleardley.net/iPhone6/images/";
 	var grasporder = 0;
 	var phonesize = 0;
+	var postureNum = 0;
 	var usernumber = 0;
 	var currentgrasp = 0;
 	var currentgraspcount = 0;
@@ -278,7 +279,7 @@
 			timeelapsed = d.getTime()-starttime;
 			currenttime = d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()+"/"+addZero(d.getHours())+"/"+addZero(d.getMinutes())+"/"+addZero(d.getSeconds());
 			//commenting the next line will stop the data logging
-			document.getElementById('hiddenDiv').innerHTML= document.getElementById('hiddenDiv').innerHTML+"<br>"+grasporder+","+phonesize+","+usernumber+","+currentgrasp+","+ButtonPositionsNameTable[currenttarget]+","+text+","+timeelapsed+","+error+","+absolute+","+Math.floor(alpha)+","+Math.floor(beta)+","+Math.floor(gamma)+","+success+","+currenttime;
+			document.getElementById('hiddenDiv').innerHTML= document.getElementById('hiddenDiv').innerHTML+"<br>"+grasporder+","+phonesize+","+postureNum+","+usernumber+","+currentgrasp+","+ButtonPositionsNameTable[currenttarget]+","+text+","+timeelapsed+","+error+","+absolute+","+Math.floor(alpha)+","+Math.floor(beta)+","+Math.floor(gamma)+","+success+","+currenttime;
 		}
 	}
 
@@ -340,13 +341,21 @@
   			phonesize = document.getElementById('ckphone1').value;
 		if (document.getElementById('ckphone2').checked)
   			phonesize = document.getElementById('ckphone2').value;
-  		if (document.getElementById('ckphone3').checked)
-  			phonesize = document.getElementById('ckphone3').value;
+  		// if (document.getElementById('ckphone3').checked)
+  		// 	phonesize = document.getElementById('ckphone3').value;
+
+			if (document.getElementById('ckposture1').checked)
+					postureNum = document.getElementById('ckposture1').value;
+			if (document.getElementById('ckposture2').checked)
+					postureNum = document.getElementById('ckposture2').value;
+			if (document.getElementById('ckposture3').checked)
+					postureNum = document.getElementById('ckposture3').value;
+
 
   		usernumber = document.getElementById('usernumber').value;
 
   		// then writting information in the header of the csv file
-  		document.getElementById('hiddenDiv').innerHTML= "grasporder,posture,usernumber,currentgrasp,currenttarget, mouse event,mouseX,mouseY,time,error, absolute,alpha,beta,gamma,success,currenttime";
+  		document.getElementById('hiddenDiv').innerHTML= "grasporder,support,posture,usernumber,currentgrasp,currenttarget, mouse event,mouseX,mouseY,time,error, absolute,alpha,beta,gamma,success,currenttime";
 
   		//finally we start our automate
   		moveAutomate("",0,0);
@@ -645,11 +654,20 @@ console.log(currentgrasp);
 
   			<fieldset>
   			<input type = "radio" name="phonecondition" id = "ckphone1" value = "1" checked/>
-  			<label for = "ckphone1">Support-Support</label>
+  			<label for = "ckphone1">Support</label>
   			<input type = "radio" name="phonecondition" id = "ckphone2" value = "2" />
-  			<label for = "ckphone2">Support-NoSupport</label>
-  			<input type = "radio" name="phonecondition" id = "ckphone3" value = "3" />
-  			<label for = "ckphone3">NoSupport-NoSupport</label>
+  			<label for = "ckphone2">NoSupport</label>
+  			<!-- <input type = "radio" name="phonecondition" id = "ckphone3" value = "3" />
+  			<label for = "ckphone3">NoSupport-NoSupport</label> -->
+  			</fieldset>
+
+				<fieldset>
+  			<input type = "radio" name="phonecondition" id = "ckposture1" value = "1" checked/>
+  			<label for = "ckposture1">LyingDown-On-His/Her-Side</label>
+  			<input type = "radio" name="phonecondition" id = "ckposture2" value = "2" />
+  			<label for = "ckposture2">FacingUp</label>
+  			<input type = "radio" name="phonecondition" id = "ckposture3" value = "3" />
+  			<label for = "ckposture3">FacingDown</label>
   			</fieldset>
 
   			<fieldset>
