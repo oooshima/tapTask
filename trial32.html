@@ -490,7 +490,7 @@
 									//we minimize the canvas size and leave more space on the screen for the hidden div
 									document.getElementById("canvasOne").height=document.getElementById("canvasOne").height/10;
 									document.getElementById('hiddenDiv').style.display = "block";
-									document.getElementById('savefileform').style.display = "block";
+
 									//document.getElementById('savefileform').style.display = "block";
 									//we put back the scroll and scrollbar
 
@@ -651,6 +651,33 @@ console.log(currentgrasp);
 		document.body.removeChild(event.target);
 	}
 
+
+//to sellect all text with one tap
+
+$('div.text-select-class').on('click', function (e) {
+            //e.preventDefault();
+            select_all(this);
+            var divJQ = $(this);
+            var text = divJQ.text();
+            alert(text);
+        });
+
+	function select_all(el) {
+	            if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+	                var range = document.createRange();
+	                range.selectNodeContents(el);
+	                var sel = window.getSelection();
+	                sel.removeAllRanges();
+	                sel.addRange(range);
+	            } else if (typeof document.selection != "undefined" && typeof document.body.createTextRange != "undefined") {
+	                var textRange = document.body.createTextRange();
+	                textRange.moveToElementText(el);
+	                textRange.select();
+	            }
+	        }
+
+
+
 	</script>
 
 </head>
@@ -728,7 +755,7 @@ console.log(currentgrasp);
  		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
  	</div>
 
-	<div hidden id="hiddenDiv">
+	<div hidden id="hiddenDiv" class="text-select-class">
 	</div>
 
 </body>
