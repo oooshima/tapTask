@@ -28,9 +28,9 @@
 	<script type="text/javascript">
 
 	//here our public variable (btw this is really ugly coding lol)
-	var foldername = "/images";
+	var foldername = "images";
 	//var foldername = "http://www.anneroudaut.fr/Rachel/images/";
-	var foldername = "http://www.racheleardley.net/iPhone6/images/";
+	//var foldername = "http://www.racheleardley.net/iPhone6/images/";
 	var grasporder = 0;
 	var phonesize = 0;
 	var postureNum = 0;
@@ -555,17 +555,6 @@
 			document.execCommand("copy");
 	}
 
-	function copyToClipboard() {
-            // コピー対象をJavaScript上で変数として定義する
-            var copyTarget = document.getElementById("copyTarget");
-            // コピー対象のテキストを選択する
-            copyTarget.select();
-            // 選択しているテキストをクリップボードにコピーする
-            document.execCommand("Copy");
-            // コピーをお知らせする
-            alert("コピーできました！ : " + copyTarget.value);
-        }
-
 
 	//function that display the graphics
 	function updateCanvasGraphic()
@@ -791,8 +780,10 @@ console.log(currentgrasp);
 		<td><button onclick="saveTextAsFile()">Save</button></td>
  	</div>
  	<div hidden id="audiodiv">
- 		<audio id="click_good" src="http://www.racheleardley.net/iPhone6/images/click_good.wav" preload="auto"></audio>
- 		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
+ 		<!-- <audio id="click_good" src="http://www.racheleardley.net/iPhone6/images/click_good.wav" preload="auto"></audio>
+ 		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio> -->
+		<audio id="click_good" src="images/click_good.wav" preload="auto"></audio>
+ 		<audio id="click_bad" src="images/click_bad.mp3" preload="auto"></audio>
  	</div>
 
 	<div hidden id="reload_button">
