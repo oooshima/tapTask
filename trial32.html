@@ -25,7 +25,8 @@
 
 	<title>Study 1</title>
 
-	<script type="text/javascript">
+	<!-- <script type="text/javascript"> -->
+	<script>
 
 	//here our public variable (btw this is really ugly coding lol)
 	var foldername = "images";
@@ -514,7 +515,7 @@
 									document.getElementById('hiddenDiv').onclick = function() {
 										select_all(this);
 									};
-									//document.getElementById('savefileform').style.display = "block";
+									document.getElementById('savefileform').style.display = "block";
 									//we put back the scroll and scrollbar
 
 									document.body.style.overflow = 'scroll';
@@ -686,6 +687,25 @@ console.log(currentgrasp);
 		downloadLink.click();
 	}
 
+	function dispText() {
+			var textToWrite = document.getElementById("hiddenDiv").innerHTML;
+			var result = textToWrite.replace(/<br>/g, "<\n>");
+			var blob = new Blob([result], { "type": "text/plain" });
+			var fileNameToSaveAs = document.getElementById("inputFileNameToSaveAs").value;
+
+			var target = document.getElementById("createFile");
+			target.download = fileNameToSaveAs+".txt"
+
+			//IEの場合
+			if (window.navigator.msSaveBlob) {
+					window.navigator.msSaveBlob(blob, "outFileFromWindows.txt");
+					//IE以外の場合
+			} else {
+					document.getElementById("createFile").href = window.URL.createObjectURL(blob);
+			}
+	}
+
+
 	function destroyClickedElement(event)
 	{
 		document.body.removeChild(event.target);
@@ -775,9 +795,10 @@ console.log(currentgrasp);
  			</form>
  	</div>
  	<div hidden id="savefileform">
- 		<td>Filename name:</td>
+ 		<td>Filename name:</td> -->
 		<td><input id="inputFileNameToSaveAs"></input></td>
-		<td><button onclick="saveTextAsFile()">Save</button></td>
+		<!-- <td><button onclick="saveTextAsFile()">Save</button></td> -->
+		<a id="createFile" href="#" download="outFile.txt" value="save file" onclick="dispText()">save file</a>
  	</div>
  	<div hidden id="audiodiv">
  		<!-- <audio id="click_good" src="http://www.racheleardley.net/iPhone6/images/click_good.wav" preload="auto"></audio>
