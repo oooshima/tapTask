@@ -508,6 +508,7 @@
 									//so let's stop the automate
 									currentstate = "";
 									//we minimize the canvas size and leave more space on the screen for the hidden div
+									document.getElementById('reload_button').style.display = "block";
 									document.getElementById("canvasOne").height=document.getElementById("canvasOne").height/10;
 									document.getElementById('hiddenDiv').style.display = "block";
 									document.getElementById('hiddenDiv').onclick = function() {
@@ -781,6 +782,7 @@ console.log(currentgrasp);
 
   			<button type = "button" onclick = "startXP()">Start experiment</button>
 				<button type = "button" onclick = "request_permission()">request_permission</button>
+				<button hidden id="reload_button" type = "button" onclick = "window.location.reload();">reload</button>
 
  			</form>
  	</div>
