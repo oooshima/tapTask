@@ -782,7 +782,6 @@ console.log(currentgrasp);
 
   			<button type = "button" onclick = "startXP()">Start experiment</button>
 				<button type = "button" onclick = "request_permission()">request_permission</button>
-				<button hidden id="reload_button" type = "button" onclick = "window.location.reload();">reload</button>
 
  			</form>
  	</div>
@@ -796,6 +795,9 @@ console.log(currentgrasp);
  		<audio id="click_bad" src="http://www.racheleardley.net/iPhone6/images/click_bad.mp3" preload="auto"></audio>
  	</div>
 
+	<div hidden id="reload_button">
+		<button type = "button" onclick = "window.location.reload();">reload</button>
+	</div>
 	<div hidden id="hiddenDiv" type="text">
 	</div>
 
