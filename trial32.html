@@ -510,6 +510,9 @@
 									currentstate = "";
 									//we minimize the canvas size and leave more space on the screen for the hidden div
 									document.getElementById('reload_button').style.display = "block";
+									document.getElementById("copy").onclick = function() {
+										select_all(document.getElementById('hiddenDiv'));
+									}
 									document.getElementById("canvasOne").height=document.getElementById("canvasOne").height/10;
 									document.getElementById('hiddenDiv').style.display = "block";
 									document.getElementById('hiddenDiv').onclick = function() {
@@ -810,6 +813,7 @@ console.log(currentgrasp);
 
 	<div hidden id="reload_button">
 		<button type = "button" onclick = "window.location.reload();">reload</button>
+		<button id="copy" type = "button" onclick = "window.location.reload();">copy</button>
 	</div>
 	<div hidden id="hiddenDiv" type="text">
 	</div>
